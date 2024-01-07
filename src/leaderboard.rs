@@ -1,13 +1,13 @@
 use std::fs::File;
-use std::io::{self, BufRead};
+use std::io::{self, BufRead, Write};
 
 const FILE: &str = "leaderboard.csv";
 
-fn get_leader_board() -> Vec<(String, u32)> {
+fn get_leaderboard() -> Vec<(String, u32)> {
     let file = match File::open(FILE) {
         Ok(r) => r,
         Err(err) => {
-            println!("ERROR while trying to fetch file, {}", err);
+            println!("Error while trying to fetch file, {}", err);
             return Vec::new();
         }
     };
@@ -30,8 +30,8 @@ fn get_leader_board() -> Vec<(String, u32)> {
     board
 }
 
-pub fn leader_board_http() -> String {
-    let board = get_leader_board();
+pub fn leaderboard_http() -> String {
+    let board = get_leaderboard();
 
     let mut result = String::new();
 
@@ -40,4 +40,26 @@ pub fn leader_board_http() -> String {
     }
 
     result
+}
+
+pub fn add_to_leaderboard(data_line: &str) {
+    let mut file = match File::options().append(true).create(true).open(FILE) {
+        Ok(r) => r,
+        Err(err) => {
+            println!(
+                "There was an error when opening the leaderboard file, {}",
+                err
+            );
+            return;
+        }
+    };
+
+    let data = format!("{}\n", data_line);
+    match file.write(data.as_bytes()) {
+        Ok(_) => {}
+        Err(err) => println!(
+            "There was an error when writing to the leaderboard file, {}",
+            err
+        ),
+    };
 }
