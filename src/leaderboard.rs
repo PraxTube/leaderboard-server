@@ -39,7 +39,7 @@ pub fn leaderboard_http() -> String {
         result.push_str(&format!("{},{};", name, score));
     }
 
-    result
+    result.trim_end_matches(";").to_string()
 }
 
 pub fn add_to_leaderboard(data_line: &str) {
