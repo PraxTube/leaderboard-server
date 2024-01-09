@@ -13,7 +13,7 @@ fn add_leaderboard_response(request: String) -> String {
 
         if !lines.is_empty() {
             let data_line = lines[0];
-            if data_line.chars().filter(|&c| c == ',').count() == 1 {
+            if data_line.chars().filter(|&c| c == ',').count() == 3 {
                 add_to_leaderboard(data_line);
                 return "HTTP/1.1 200 OK\r\n\r\nData received successfully".to_string();
             }

@@ -3,7 +3,7 @@ use std::io::{self, BufRead, Write};
 
 const FILE: &str = "leaderboard.csv";
 
-fn get_leaderboard() -> Vec<(String, u32)> {
+fn get_leaderboard() -> Vec<(String, u32, String, String)> {
     let file = match File::open(FILE) {
         Ok(r) => r,
         Err(err) => {
@@ -13,13 +13,16 @@ fn get_leaderboard() -> Vec<(String, u32)> {
     };
     let reader = io::BufReader::new(file);
 
-    let mut board: Vec<(String, u32)> = reader
+    let mut board: Vec<(String, u32, String, String)> = reader
         .lines()
         .filter_map(|line| {
             line.ok().and_then(|l| {
                 let parts: Vec<&str> = l.split(',').map(str::trim).collect();
                 match parts.as_slice() {
-                    [key, value] => value.parse().ok().map(|v: u32| (key.to_string(), v)),
+                    [key, score, kills, time] => score
+                        .parse()
+                        .ok()
+                        .map(|v: u32| (key.to_string(), v, kills.to_string(), time.to_string())),
                     _ => None,
                 }
             })
@@ -35,8 +38,8 @@ pub fn leaderboard_http() -> String {
 
     let mut result = String::new();
 
-    for (name, score) in board {
-        result.push_str(&format!("{},{};", name, score));
+    for (name, score, kills, time) in board {
+        result.push_str(&format!("{},{},{},{};", name, score, kills, time));
     }
 
     result.trim_end_matches(";").to_string()
