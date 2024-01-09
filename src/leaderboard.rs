@@ -1,10 +1,10 @@
 use std::fs::File;
 use std::io::{self, BufRead, Write};
 
-const FILE: &str = "leaderboard.csv";
+const FILE_PATH: &str = "/var/www/html/games/insta-kill/leaderboard.csv";
 
 fn get_leaderboard() -> Vec<(String, u32, String, String)> {
-    let file = match File::open(FILE) {
+    let file = match File::open(FILE_PATH) {
         Ok(r) => r,
         Err(err) => {
             println!("Error while trying to fetch file, {}", err);
@@ -46,7 +46,7 @@ pub fn leaderboard_http() -> String {
 }
 
 pub fn add_to_leaderboard(data_line: &str) {
-    let mut file = match File::options().append(true).create(true).open(FILE) {
+    let mut file = match File::options().append(true).create(true).open(FILE_PATH) {
         Ok(r) => r,
         Err(err) => {
             println!(
