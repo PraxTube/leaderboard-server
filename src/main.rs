@@ -18,7 +18,7 @@ fn add_leaderboard_response(body: String) -> String {
 #[tokio::main]
 async fn main() {
     let request = warp::post()
-        .and(warp::path("board"))
+        .and(warp::path("leaderboard"))
         .and(warp::body::content_length_limit(1024))
         .and(warp::body::bytes())
         .map(|bytes: Bytes| {
