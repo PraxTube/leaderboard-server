@@ -19,7 +19,7 @@ fn add_leaderboard_response(body: String) -> String {
 async fn main() {
     let request = warp::post()
         .and(warp::path("leaderboard"))
-        .and(warp::body::content_length_limit(1024))
+        .and(warp::body::content_length_limit(1024 * 1024))
         .and(warp::body::bytes())
         .map(|bytes: Bytes| {
             let s = match String::from_utf8(bytes.to_vec()) {
