@@ -25,8 +25,8 @@ async fn main() {
 
     warp::serve(request)
         .tls()
-        .cert_path("/etc/ssl/certs/ssl-cert-snakeoil.pem")
-        .key_path("/etc/ssl/private/ssl-cert-snakeoil.key")
-        .run(([0, 0, 0, 0], 21021))
+        .cert_path("/etc/letsencrypt/live/rancic.org/fullchain.pem")
+        .key_path("/etc/letsencrypt/live/rancic.org/privkey.pem")
+        .run(([0, 0, 0, 0], 3434))
         .await
 }
