@@ -4,6 +4,8 @@ use warp::Filter;
 
 use crate::leaderboard::add_to_leaderboard;
 
+const MAX_LEADERBOARD_ENTRIES: usize = 1000;
+
 fn add_leaderboard_response(name: String, score: u32, kills: u32, time: f32) -> String {
     let body = format!("{},{},{},{}", name, score, kills, time);
     add_to_leaderboard(&body);

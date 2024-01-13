@@ -1,6 +1,8 @@
 use std::fs::File;
 use std::io::{self, BufRead, Write};
 
+use crate::MAX_LEADERBOARD_ENTRIES;
+
 const FILE_PATH: &str = "/var/www/html/games/insta-kill/leaderboard.csv";
 
 struct LeaderboardEntry {
@@ -80,6 +82,7 @@ pub fn add_to_leaderboard(data_line: &str) {
     let mut leaderboard = sorted_leaderboard();
     insert_sorted(&mut leaderboard, entry);
     leaderboard.reverse();
+    leaderboard.truncate(MAX_LEADERBOARD_ENTRIES);
 
     let data: Vec<String> = leaderboard.iter().map(|l| l.to_string()).collect();
     let data_str = data.join("\n");
