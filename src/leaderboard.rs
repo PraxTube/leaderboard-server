@@ -64,13 +64,14 @@ fn sorted_leaderboard() -> Vec<LeaderboardEntry> {
             return Vec::new();
         }
     };
-    let mut reader = io::BufReader::new(file);
-    let mut line = String::new();
-    let _ = reader.read_line(&mut line);
+    let reader = io::BufReader::new(file);
 
-    let mut board: Vec<LeaderboardEntry> = line
-        .split(';')
-        .filter_map(|entry| LeaderboardEntry::try_from(&entry))
+    let mut board: Vec<LeaderboardEntry> = reader
+        .lines()
+        .filter_map(|line| {
+            line.ok()
+                .and_then(|entry| LeaderboardEntry::try_from(&entry))
+        })
         .collect();
     board.sort_by(|a, b| a.score.cmp(&b.score));
     board
@@ -87,7 +88,7 @@ pub fn add_to_leaderboard(data_line: &str) {
     leaderboard.truncate(MAX_LEADERBOARD_ENTRIES);
 
     let data: Vec<String> = leaderboard.iter().map(|l| l.to_string()).collect();
-    let data_str = data.join(";") + ";";
+    let data_str = data.join("\n");
 
     let mut file = match File::options().write(true).create(true).open(FILE_PATH) {
         Ok(r) => r,
