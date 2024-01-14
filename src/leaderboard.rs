@@ -72,8 +72,6 @@ fn sorted_leaderboard() -> Vec<LeaderboardEntry> {
         .split(';')
         .filter_map(|entry| LeaderboardEntry::try_from(&entry))
         .collect();
-    board.pop();
-
     board.sort_by(|a, b| a.score.cmp(&b.score));
     board
 }
@@ -101,6 +99,10 @@ pub fn add_to_leaderboard(data_line: &str) {
             return;
         }
     };
+    if let Err(err) = file.set_len(0) {
+        println!("Couldn't clear .csv file, {}", err);
+        return;
+    }
 
     match file.write(data_str.as_bytes()) {
         Ok(_) => {}
