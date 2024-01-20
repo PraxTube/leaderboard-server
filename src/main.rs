@@ -1,6 +1,6 @@
 mod leaderboard;
 
-use warp::Filter;
+use warp::{http::Method, Filter};
 
 use crate::leaderboard::add_to_leaderboard;
 
@@ -14,6 +14,7 @@ fn add_leaderboard_response(name: String, score: u32, kills: u32, time: f32) -> 
 
 #[tokio::main]
 async fn main() {
+    let cors = warp::cors().allow_any_origin().allow_method(Method::POST);
     let request = warp::post()
         .and(warp::path("leaderboard"))
         .and(warp::path::param::<String>())
@@ -23,7 +24,8 @@ async fn main() {
         .map(|name, score, kills, time| {
             add_leaderboard_response(name, score, kills, time);
             warp::reply()
-        });
+        })
+        .with(cors);
 
     warp::serve(request)
         .tls()
